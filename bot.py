@@ -3,6 +3,7 @@ import os
 import requests
 import discord
 import json
+import asyncio
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -36,18 +37,22 @@ initialrequest = initialrequest.json()
 initialstatus = initialrequest['status']['type']
 
 async def update_status():
-        global initialstatus
-        await  bot.wait_until_ready()
-        channel = bot.get_channel(795162312112865280)
-        updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
-        updaterequest = updaterequest.json()
-        updatestatus = updaterequest['status']['type']
-        if updatestatus != initialstatus:
-                await channel.send(f'World server status has changed to: {updatestatus}!')
-                initialstatus = updatestatus
-                print('Status Change')
-        else:
-                print('No Change')
+        while True:
+                global initialstatus
+                channel = bot.get_channel(795162312112865280)
+                updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
+                updaterequest = updaterequest.json()
+                updatestatus = updaterequest['status']['type']
+                if updatestatus != initialstatus:
+                        await channel.send(f'World server status has changed to: {updatestatus}!')
+                        initialstatus = updatestatus
+                        print('Status Change')
+                        await asyncio.sleep(5)
+                else:
+                        print('No Change')
+                        await asyncio.sleep(5)
+
+asyncio.run(update_status())
 
 @bot.command(name='status', help='Gets the current server status')
 async def manual_status(ctx):
