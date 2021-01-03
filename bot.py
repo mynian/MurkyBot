@@ -28,7 +28,6 @@ def create_access_token(client_id, client_secret, region = 'us'):
         return response.json()
 
 tokenresponse = create_access_token(CLIENTID, CLIENTSECRET)
-
 accesstoken = tokenresponse["access_token"]
 print(accesstoken)
 
@@ -37,6 +36,7 @@ initialrequest = initialrequest.json()
 initialstatus = initialrequest['status']['type']
 
 async def update_status():
+        global initialstatus
         await  bot.wait_until_ready()
         channel = bot.get_channel(795162312112865280)
         updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
