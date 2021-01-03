@@ -37,13 +37,13 @@ initialrequest = initialrequest.json()
 initialstatus = initialrequest['status']['type']
 print(f'Initial status: {initialstatus}')
 
-#@bot.command(name='status', help='Gets the current server status')
-#async def manual_status(ctx):
-#       manualrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
-#       manualrequest = manualrequest.json()
-#       manualstatus = manualrequest['status']['type']
-#       channel = bot.get_channel(795162312112865280)
-#       await ctx.send(f'Current world server status is: {manualstatus}')
+@bot.command(name='status', help='Gets the current server status')
+async def manual_status(ctx):
+       manualrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
+       manualrequest = manualrequest.json()
+       manualstatus = manualrequest['status']['type']
+       channel = bot.get_channel(795162312112865280)
+       await ctx.send(f'Current world server status is: {manualstatus}')
 
 bot.run(TOKEN)
 
