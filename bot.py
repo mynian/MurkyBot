@@ -45,8 +45,13 @@ async def update_status():
         if updatestatus != initialstatus:
                 await channel.send(f'World server status has changed to: {updatestatus}!')
                 initialstatus = updatestatus
+                print('Status Change')
         else:
-                pass
+                print('No Change')
+
+while True:
+        update_status()
+        time.sleep(5)
 
 @bot.command(name='status', help='Gets the current server status')
 async def manual_status(ctx):
