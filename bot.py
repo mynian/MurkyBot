@@ -14,11 +14,13 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 CLIENTID = os.getenv('CLIENT_ID')
 CLIENTSECRET = os.getenv('CLIENT_SECRET')
 
-client = discord.Client()
+bot = commands.Bot(command_prefix='+')
 
-@client.event
+@bot.event
 async def on_ready():
-        print(f'{client.user} has connected to Discord!')
+        print(f'{bot.user.name} has connected to Discord!')
+        channel = bot.get_channel(795162312112865280)
+        await channel.send('MurkyBot has connected')
 
 def create_access_token(client_id, client_secret, region = 'us'):
     data = { 'grant_type': 'client_credentials' }
@@ -33,6 +35,25 @@ print(accesstoken)
 initialrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
 initialrequest = initialrequest.json()
 initialstatus = initialrequest['status']['type']
-print(initialstatus)
 
-client.run(TOKEN)
+async def update_status():
+        await  bot.wait_until_ready()
+        channel = bot.get_channel(795162312112865280)
+        updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
+        updaterequest = updaterequest.json()
+        updatestatus = updaterequest['status']['type']
+        if updatestatus != initialstatus:
+                await channel.send(f'World server status has changed to: {updatestatus}!')
+                initialstatus = updatestatus
+        else:
+                pass
+
+@bot.command(name='status', help='Gets the current server status')
+async def manual_status(ctx):
+        manualrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
+        manualrequest = manualrequest.json()
+        manualstatus = manualrequest['status']['type']
+        channel = bot.get_channel(795162312112865280)
+        await ctx.send(f'Current world server status is: {manualstatus}')
+
+bot.run(TOKEN)
