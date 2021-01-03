@@ -3,7 +3,6 @@ import os
 import requests
 import discord
 import json
-import time
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -49,10 +48,6 @@ async def update_status():
                 print('Status Change')
         else:
                 print('No Change')
-
-while True:
-        update_status()
-        time.sleep(5)
 
 @bot.command(name='status', help='Gets the current server status')
 async def manual_status(ctx):
