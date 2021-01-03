@@ -23,9 +23,9 @@ async def on_ready():
         await channel.send('MurkyBot has connected')
 
 def create_access_token(client_id, client_secret, region = 'us'):
-    data = { 'grant_type': 'client_credentials' }
-    response = requests.post('https://%s.battle.net/oauth/token' % region, data=data, auth=(client_id, client_secret))
-    return response.json()
+        data = { 'grant_type': 'client_credentials' }
+        response = requests.post('https://%s.battle.net/oauth/token' % region, data=data, auth=(client_id, client_secret))
+        return response.json()
 
 tokenresponse = create_access_token(CLIENTID, CLIENTSECRET)
 
