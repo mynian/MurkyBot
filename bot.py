@@ -21,7 +21,7 @@ bot = commands.Bot(command_prefix='+')
 async def update_status():
         while True:
                 global initialstatus
-                channel = bot.get_channel(795162312112865280)
+                channel = bot.get_channel(CHANNEL_ID_HERE)
                 updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
                 updaterequest = updaterequest.json()
                 updatestatus = updaterequest['status']['type']
@@ -40,7 +40,7 @@ async def update_status():
 async def on_ready():
         update_status.start()
         print(f'{bot.user.name} has connected to Discord!')
-        channel = bot.get_channel(795162312112865280)
+        channel = bot.get_channel(CHANNEL_ID_HERE)
         await channel.send('MurkyBot has connected')
 
 def create_access_token(client_id, client_secret, region = 'us'):
@@ -62,7 +62,7 @@ async def manual_status(ctx):
        manualrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
        manualrequest = manualrequest.json()
        manualstatus = manualrequest['status']['type']
-       channel = bot.get_channel(795162312112865280)
+       channel = bot.get_channel(CHANNEL_ID_HERE)
        await ctx.send(f'Current world server status is: {manualstatus}')
 
 
