@@ -17,8 +17,28 @@ CLIENTSECRET = os.getenv('CLIENT_SECRET')
 
 bot = commands.Bot(command_prefix='+')
 
+@tasks.loop(seconds=60.0)
+async def update_status():
+        while True:
+                global initialstatus
+                channel = bot.get_channel(795162312112865280)
+                updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
+                updaterequest = updaterequest.json()
+                updatestatus = updaterequest['status']['type']
+                if updatestatus != initialstatus:
+                        await channel.send(f'Server status has changed to: {updatestatus}!')
+                        initialstatus = updatestatus
+                        print('Status Change')
+                        await asyncio.sleep(5)
+                else:
+                        await channel.send(f'Server status is still: {updatestatus}.')
+                        print('No Change')
+                        await asyncio.sleep(5)
+
+
 @bot.event
 async def on_ready():
+        update_status.start()
         print(f'{bot.user.name} has connected to Discord!')
         channel = bot.get_channel(795162312112865280)
         await channel.send('MurkyBot has connected')
@@ -45,23 +65,6 @@ async def manual_status(ctx):
        channel = bot.get_channel(795162312112865280)
        await ctx.send(f'Current world server status is: {manualstatus}')
 
+
+
 bot.run(TOKEN)
-
-async def update_status():
-        while True:
-                global initialstatus
-                channel = bot.get_channel(795162312112865280)
-                updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
-                updaterequest = updaterequest.json()
-                updatestatus = updaterequest['status']['type']
-                if updatestatus != initialstatus:
-                        await channel.send(f'Server status has changed to: {updatestatus}!')
-                        initialstatus = updatestatus
-                        print('Status Change')
-                        await asyncio.sleep(5)
-                else:
-                        await channel.send(f'Server status is still: {updatestatus}.')
-                        print('No Change')
-                        await asyncio.sleep(5)
-
-asyncio.run(update_status())
