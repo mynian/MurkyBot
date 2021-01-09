@@ -4,6 +4,7 @@ import requests
 import discord
 import json
 import asyncio
+import datetime
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -21,27 +22,45 @@ bot = commands.Bot(command_prefix='+')
 async def update_status():
         while True:
                 global initialstatus
-                channel = bot.get_channel(CHANNEL_ID_HERE)
+                global accesstoken
+                channel = bot.get_channel(insert channel id here)
+                guild = bot.guilds[0]
+                role = discord.utils.get(guild.roles, name="Member")
                 updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
-                updaterequest = updaterequest.json()
-                updatestatus = updaterequest['status']['type']
-                if updatestatus != initialstatus:
-                        await channel.send(f'Server status has changed to: {updatestatus}!')
-                        initialstatus = updatestatus
-                        print('Status Change')
-                        await asyncio.sleep(5)
+                if updaterequest.status_code == 200:
+                        updaterequest = updaterequest.json()
+                        updatestatus = updaterequest['status']['type']
+                        if updatestatus != initialstatus:
+                                await channel.send(f'{role.mention} Server status has changed to: {updatestatus}!')
+                                initialstatus = updatestatus
+                                ct = datetime.datetime.now()
+                                print(f'Status Changed to {updatestatus} at {ct}.')
+                                await asyncio.sleep(5)
+                        else:
+                                ct = datetime.datetime.now()
+                                print(f'No Change from {initialstatus} at {ct}.')
+                                await asyncio.sleep(5)
                 else:
-                        await channel.send(f'Server status is still: {updatestatus}.')
-                        print('No Change')
-                        await asyncio.sleep(5)
-
+                        tokenresponse = create_access_token(CLIENTID, CLIENTSECRET)
+                        accesstoken = tokenresponse["access_token"]
+                        updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
+                        updaterequest = updaterequest.json()
+                        updatestatus = updaterequest['status']['type']
+                        if updatestatus != initialstatus:
+                                await channel.send(f'{role.mention} Server status has changed to: {updatestatus}!')
+                                initialstatus = updatestatus
+                                ct = datetime.datetime.now()
+                                print(f'Status Changed to {updatestatus} at {ct}.')
+                                await asyncio.sleep(5)
+                        else:
+                                ct = datetime.datetime.now()
+                                print(f'No Change from {initialstatus} at {ct}.')
+                                await asyncio.sleep(5)
 
 @bot.event
 async def on_ready():
         update_status.start()
         print(f'{bot.user.name} has connected to Discord!')
-        channel = bot.get_channel(CHANNEL_ID_HERE)
-        await channel.send('MurkyBot has connected')
 
 def create_access_token(client_id, client_secret, region = 'us'):
         data = { 'grant_type': 'client_credentials' }
@@ -62,9 +81,7 @@ async def manual_status(ctx):
        manualrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
        manualrequest = manualrequest.json()
        manualstatus = manualrequest['status']['type']
-       channel = bot.get_channel(CHANNEL_ID_HERE)
-       await ctx.send(f'Current world server status is: {manualstatus}')
-
-
+       channel = bot.get_channel(insert channel id here)
+       await ctx.send(f'{ctx.author.mention} Current world server status is: {manualstatus}')
 
 bot.run(TOKEN)
