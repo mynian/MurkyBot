@@ -29,7 +29,7 @@ async def update_status():
                 updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
                 if updaterequest.status_code == 200:
                         updaterequest = updaterequest.json()
-                        updatestatus = updaterequest['status']['type']
+                        updatestatus = updaterequest['status']['name']
                         if updatestatus != initialstatus:
                                 await channel.send(f'{role.mention} Server status has changed to: {updatestatus}!')
                                 initialstatus = updatestatus
@@ -45,7 +45,7 @@ async def update_status():
                         accesstoken = tokenresponse["access_token"]
                         updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
                         updaterequest = updaterequest.json()
-                        updatestatus = updaterequest['status']['type']
+                        updatestatus = updaterequest['status']['name']
                         if updatestatus != initialstatus:
                                 await channel.send(f'{role.mention} Server status has changed to: {updatestatus}!')
                                 initialstatus = updatestatus
@@ -73,15 +73,16 @@ print(accesstoken)
 
 initialrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
 initialrequest = initialrequest.json()
-initialstatus = initialrequest['status']['type']
+initialstatus = initialrequest['status']['name']
 print(f'Initial status: {initialstatus}')
 
 @bot.command(name='status', help='Gets the current server status')
 async def manual_status(ctx):
        manualrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
        manualrequest = manualrequest.json()
-       manualstatus = manualrequest['status']['type']
+       manualstatus = manualrequest['status']['name']
        channel = bot.get_channel(insert channel id here)
        await ctx.send(f'{ctx.author.mention} Current world server status is: {manualstatus}')
+
 
 bot.run(TOKEN)
