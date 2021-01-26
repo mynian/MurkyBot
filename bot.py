@@ -19,9 +19,11 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 CLIENTID = os.getenv('CLIENT_ID')
 CLIENTSECRET = os.getenv('CLIENT_SECRET')
-CHANNELID = os.getenv('CHANNEL_ID')
 
 bot = commands.Bot(command_prefix='+')
+guild = 0
+role = 0
+channel = 0
 
 @tasks.loop(seconds=60.0)
 async def update_status():
@@ -29,12 +31,11 @@ async def update_status():
                 global initialstatus
                 global accesstoken
                 global tokenresponse
+                global channel
+                channel = discord.utils.get(guild.channels, name="server-status")
                 tokenresponse = create_access_token(CLIENTID, CLIENTSECRET)
                 accesstoken = tokenresponse["access_token"]
                 print(f'Access Token: {accesstoken}')
-                channel = bot.get_channel(CHANNELID)
-                guild = bot.guilds[0]
-                role = discord.utils.get(guild.roles, name="Member")
                 updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
                 if updaterequest:
                         updaterequest = updaterequest.json()
@@ -63,7 +64,13 @@ async def update_status():
 
 @bot.event
 async def on_ready():
+        global guild
+        global role
+        global channel
         update_status.start()
+        guild = bot.guilds[0]
+        role = discord.utils.get(guild.roles, name="Member")
+        channel = discord.utils.get(guild.channels, name="server-status")
         print(f'{bot.user.name} has connected to Discord!')
 
 def create_access_token(client_id, client_secret, region = 'us'):
@@ -91,17 +98,14 @@ async def manual_status(ctx):
        manualrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
        manualrequest = manualrequest.json()
        manualstatus = manualrequest['status']['name']
-       channel = bot.get_channel(CHANNELID)
        await ctx.send(f'{ctx.author.mention} Current world server status is: {manualstatus}')
 
 @bot.command(name='loveme', help='Loves you not')
 async def loveme(ctx):
-        channel = bot.get_channel(CHANNELID)
         await ctx.send(f'{ctx.author.mention} Sorry, I am incapable of love as I am not real.')
 
 @bot.command(name='test', help='Check the bot')
 async def test(ctx):
-        channel = bot.get_channel(CHANNELID)
         await ctx.send(f'{ctx.author.mention} I am responding to commands.')
 
 bot.run(TOKEN)
