@@ -59,8 +59,8 @@ async def update_status():
                 else:
                         ct = datetime.datetime.now()
                         print(f'No Response from api request at {ct}.')
-                        ledg.blink()
-                        ledr.blink()
+                        ledg.on()
+                        ledr.on()
 
 @bot.event
 async def on_ready():
