@@ -53,6 +53,12 @@ async def update_status():
                                 print(f'Status Changed to {updatestatus} at {ct}.')
                                 await asyncio.sleep(5)
                         else:
+                                if updatestatus == 'Up':
+                                        ledg.on()
+                                        ledr.off()
+                                else:
+                                        ledg.off()
+                                        ledr.on()
                                 ct = datetime.datetime.now()
                                 print(f'No Change from {initialstatus} at {ct}.')
                                 await asyncio.sleep(5)
