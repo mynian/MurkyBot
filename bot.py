@@ -82,7 +82,13 @@ async def on_ready():
 def create_access_token(client_id, client_secret, region = 'us'):
         data = { 'grant_type': 'client_credentials' }
         response = requests.post('https://%s.battle.net/oauth/token' % region, data=data, auth=(client_id, client_secret))
-        return response.json()
+        if response.json() is not None:
+            return response.json()
+        else:
+            ct = datetime.datetime.now()
+            print(f'No JSON in response for access token at {ct}.')
+            ledg.on()
+            ledr.on()
 
 tokenresponse = create_access_token(CLIENTID, CLIENTSECRET)
 accesstoken = tokenresponse["access_token"]
