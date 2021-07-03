@@ -19,6 +19,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 CLIENTID = os.getenv('CLIENT_ID')
 CLIENTSECRET = os.getenv('CLIENT_SECRET')
+REALMID = os.getenv('REALM_ID')
 
 bot = commands.Bot(command_prefix='+')
 guild = 0
@@ -36,10 +37,11 @@ async def update_status():
                 tokenresponse = create_access_token(CLIENTID, CLIENTSECRET)
                 accesstoken = tokenresponse["access_token"]
                 print(f'Access Token: {accesstoken}')
-                updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
+                updaterequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/{REALMID}?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
                 if updaterequest:
                         updaterequest = updaterequest.json()
                         updatestatus = updaterequest['status']['name']
+                        queuestatus = updaterequest['has_queue']
                         if updatestatus != initialstatus:
                                 if updatestatus == 'Up':
                                         ledg.on()
@@ -62,12 +64,21 @@ async def update_status():
                                 ct = datetime.datetime.now()
                                 print(f'No Change from {initialstatus} at {ct}.')
                                 await asyncio.sleep(5)
+                        if queuestatus != initialqueue:
+                                if queuestatus is False:
+                                        await channel.send(f'{role.mention} The server no longer has a login queue!')
+                                else:
+                                        await channel.send(f'{role.mention} The server now has a login queue!')
+                                ct = datetime.datetime.now()
+                                print(f'The queue status has changed at {ct}.')
+                        else:
+                                ct = datetime.datetime.now()
+                                print(f'The queue status has not changed at {ct}.')
                 else:
                         ct = datetime.datetime.now()
                         print(f'No Response from api request at {ct}.')
                         ledg.on()
                         ledr.on()
-
 @bot.event
 async def on_ready():
         global guild
@@ -94,9 +105,10 @@ tokenresponse = create_access_token(CLIENTID, CLIENTSECRET)
 accesstoken = tokenresponse["access_token"]
 print(accesstoken)
 
-initialrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
+initialrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/{REALMID}?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
 initialrequest = initialrequest.json()
 initialstatus = initialrequest['status']['name']
+initialqueue = initialrequest['has_queue']
 if initialstatus == 'Up':
         ledg.on()
         ledr.off()
@@ -104,10 +116,11 @@ else:
         ledg.off()
         ledr.on()
 print(f'Initial status: {initialstatus}')
+print(f'Initial queue: {initialqueue}')
 
 @bot.command(name='status', help='Gets the current server status')
 async def manual_status(ctx):
-       manualrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/154?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
+       manualrequest = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/{REALMID}?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
        manualrequest = manualrequest.json()
        manualstatus = manualrequest['status']['name']
        await ctx.send(f'{ctx.author.mention} Current world server status is: {manualstatus}')
@@ -119,5 +132,16 @@ async def loveme(ctx):
 @bot.command(name='test', help='Check the bot')
 async def test(ctx):
         await ctx.send(f'{ctx.author.mention} I am responding to commands.')
+
+@bot.command(name='queue', help='Check for a login queue')
+async def queue(ctx):
+        queuecheck = requests.get(f'https://us.api.blizzard.com/data/wow/connected-realm/{REALMID}?namespace=dynamic-us&locale=en_US&access_token={accesstoken}')
+        queuecheck = queuecheck.json()
+        queuestatus = queuecheck['has_queue']
+        if queuestatus is False:
+                await ctx.send(f'{ctx.author.mention} The server currently does not have a login queue.')
+        else:
+                await ctx.send(f'{ctx.author.mention} Get ready to wait, the server currently has a login queue.')
+
 
 bot.run(TOKEN)
