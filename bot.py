@@ -73,12 +73,13 @@ async def update_status():
                                 print(f'The queue status has changed at {ct}.')
                         else:
                                 ct = datetime.datetime.now()
-                                print(f'The queue status has not changed at {ct}.')
+                                print(f'No queue change at {ct}.')
                 else:
                         ct = datetime.datetime.now()
                         print(f'No Response from api request at {ct}.')
                         ledg.on()
                         ledr.on()
+
 @bot.event
 async def on_ready():
         global guild
