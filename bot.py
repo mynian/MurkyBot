@@ -146,5 +146,10 @@ async def queue(ctx):
         else:
                 await ctx.send(f'{ctx.author.mention} Get ready to wait, the server currently has a login queue.')
 
+@bot.command(name='murkybotselfdestruct', help='stop the bot if it is doing something stupid')
+async def murkybotselfdestruct(ctx):
+        await ctx.send(f'{ctx.author.mention} MurkyBot has been disabled.')
+        await ctx.send("<@193978785501151232>, MurkyBot has been disabled. Please look for errors and reboot.")
+        raise SystemExit
 
 bot.run(TOKEN)
