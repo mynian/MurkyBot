@@ -33,6 +33,7 @@ async def update_status():
                 global accesstoken
                 global tokenresponse
                 global channel
+                global initialqueue
                 channel = discord.utils.get(guild.channels, name="server-status")
                 tokenresponse = create_access_token(CLIENTID, CLIENTSECRET)
                 accesstoken = tokenresponse["access_token"]
@@ -69,6 +70,7 @@ async def update_status():
                                         await channel.send(f'{role.mention} The server no longer has a login queue!')
                                 else:
                                         await channel.send(f'{role.mention} The server now has a login queue!')
+                                initialqueue = queuestatus
                                 ct = datetime.datetime.now()
                                 print(f'The queue status has changed at {ct}.')
                         else:
