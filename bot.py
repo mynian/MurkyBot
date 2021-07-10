@@ -20,6 +20,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 CLIENTID = os.getenv('CLIENT_ID')
 CLIENTSECRET = os.getenv('CLIENT_SECRET')
 REALMID = os.getenv('REALM_ID')
+USERID = os.getenv('USER_ID')
 
 bot = commands.Bot(command_prefix='+')
 guild = 0
@@ -149,7 +150,7 @@ async def queue(ctx):
 @bot.command(name='murkybotselfdestruct', help='stop the bot if it is doing something stupid')
 async def murkybotselfdestruct(ctx):
         await ctx.send(f'{ctx.author.mention} MurkyBot has been disabled.')
-        await ctx.send("<@193978785501151232>, MurkyBot has been disabled. Please look for errors and reboot.")
+        await ctx.send(f'<@{USERID}>, MurkyBot has been disabled. Please look for errors and reboot.')
         raise SystemExit
 
 bot.run(TOKEN)
