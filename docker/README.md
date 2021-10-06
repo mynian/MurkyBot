@@ -4,9 +4,11 @@ This is brought to you by hacky google engineering, so it is likely not the best
 You have been warned!
 
 Requirements:
-1. Blizzard Api client and secret
-2. Discord server token
-3. World of Warcraft Realm ID
+* Blizzard Api client and secret
+* Discord server token
+* World of Warcraft Realm ID
+
+---
 
 1. Copy the following files to a directory on your docker host Ex: /home/mynian/MurkyBot:
   * bot.py
@@ -26,17 +28,16 @@ Requirements:
 
 4. Run the docker container in the foreground (so you can see all it's glory)
 docker run -it --rm --name murkybot -v "$PWD":/usr/src/myapp \
-  * --env DISCORD_TOKEN=${DISCORD_TOKEN} \
-  * --env CLIENT_ID=${CLIENT_ID} \
-  * --env CLIENT_SECRET=${CLIENT_SECRET} \
-  * --env REALM_ID=${REALM_ID} \
-  * -w /usr/src/myapp murkybot #!/usr/bin/env python /usr/src/myapp/bot.py
+  --env DISCORD_TOKEN=${DISCORD_TOKEN} \
+  --env CLIENT_ID=${CLIENT_ID} \
+  --env CLIENT_SECRET=${CLIENT_SECRET} \
+  --env REALM_ID=${REALM_ID} \
+  -w /usr/src/myapp murkybot
 
 5. Run the docker container in the background
 docker run -d --rm --name murkybot -v "$PWD":/usr/src/myapp \
-  * --env DISCORD_TOKEN=${DISCORD_TOKEN} \
-  * --env CLIENT_ID=${CLIENT_ID} \
-  * --env CLIENT_SECRET=${CLIENT_SECRET} \
-  * --env REALM_ID=${REALM_ID} \
-  * -w /usr/src/myapp murkybot
-  
+  --env DISCORD_TOKEN=${DISCORD_TOKEN} \
+  --env CLIENT_ID=${CLIENT_ID} \
+  --env CLIENT_SECRET=${CLIENT_SECRET} \
+  --env REALM_ID=${REALM_ID} \
+  -w /usr/src/myapp murkybot  
