@@ -4,9 +4,11 @@ This is brought to you by hacky google engineering, so it is likely not the best
 You have been warned!
 
 Requirements:
-1. Blizzard Api client and secret
-2. Discord server token
-3. World of Warcraft Realm ID
+* Blizzard Api client and secret
+* Discord server token
+* World of Warcraft Realm ID
+
+---
 
 1. Copy the following files to a directory on your docker host Ex: /home/mynian/MurkyBot:
   * bot.py
