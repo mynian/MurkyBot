@@ -32,7 +32,7 @@ docker run -it --rm --name murkybot -v "$PWD":/usr/src/myapp \
   --env CLIENT_ID=${CLIENT_ID} \
   --env CLIENT_SECRET=${CLIENT_SECRET} \
   --env REALM_ID=${REALM_ID} \
-  -w /usr/src/myapp murkybot #!/usr/bin/env python /usr/src/myapp/bot.py
+  -w /usr/src/myapp murkybot
 
 5. Run the docker container in the background
 docker run -d --rm --name murkybot -v "$PWD":/usr/src/myapp \
@@ -40,5 +40,4 @@ docker run -d --rm --name murkybot -v "$PWD":/usr/src/myapp \
   --env CLIENT_ID=${CLIENT_ID} \
   --env CLIENT_SECRET=${CLIENT_SECRET} \
   --env REALM_ID=${REALM_ID} \
-  -w /usr/src/myapp murkybot
-  
+  -w /usr/src/myapp murkybot  
